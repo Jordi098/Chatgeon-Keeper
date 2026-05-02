@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Dungeon Defenders Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="api.js" defer></script>
+</head>
+<body class="min-h-screen overflow-hidden bg-[#0a0f1c] text-amber-100">
+
+
+<!-- Faux dungeon texture layers -->
+<div class="fixed inset-0 -z-10 opacity-30 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:64px_64px]"></div>
+<div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_50%_20%,rgba(255,170,0,0.10),transparent_18%),radial-gradient(circle_at_75%_35%,rgba(168,85,247,0.16),transparent_16%),radial-gradient(circle_at_20%_70%,rgba(59,130,246,0.10),transparent_18%)]"></div>
+
+<main class="relative flex min-h-screen items-center justify-center p-4">
+    <div class="w-full max-w-6xl">
+
+        <!-- Logo area -->
+        <div class="mb-6 flex justify-center">
+            <div class="relative">
+                <!-- Stone frame glow -->
+                <div class="absolute inset-0 rounded-[28px] bg-[radial-gradient(circle,rgba(255,184,77,0.22),transparent_55%)] blur-2xl"></div>
+
+                <!-- Replace src with your own logo file -->
+                <div class="relative flex justify-center">
+                    <img
+                            src="Dungeon_Defenders.png"
+                            alt="Dungeon Defenders"
+                            class="max-h-[220px] w-auto object-contain drop-shadow-[0_0_30px_rgba(255,180,80,0.35)]"
+                    />
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat panel -->
+        <div class="mx-auto max-w-4xl overflow-hidden rounded-[26px] border-4 border-[#8b6b2f] bg-[#16120f]/95 shadow-[0_0_0_2px_rgba(240,190,90,0.18),0_0_40px_rgba(101,79,240,0.18),0_30px_70px_rgba(0,0,0,0.65)]">
+
+            <!-- Decorative top bar -->
+            <div class="relative border-b-2 border-[#9b7a36] bg-gradient-to-b from-[#6d4d1f] via-[#3f2a12] to-[#24170c] px-6 py-4">
+                <div class="absolute left-1/2 top-0 h-3 w-28 -translate-x-1/2 rounded-b-full bg-red-700 shadow-[0_0_14px_rgba(220,38,38,0.6)]"></div>
+                <div class="text-center">
+                    <p class="text-lg font-bold tracking-[0.25em] text-amber-200 drop-shadow-[0_0_8px_rgba(251,191,36,0.2)]">
+                        DEFENDER'S ARCHIVE
+                    </p>
+                </div>
+            </div>
+
+            <!-- Messages -->
+            <div
+                    id="chat-messages"
+                    class="h-[420px] overflow-y-auto space-y-4 bg-[linear-gradient(180deg,rgba(28,22,18,0.97),rgba(16,12,10,0.98))] p-5
+                           [&_a]:text-sky-300 [&_a]:underline [&_a]:underline-offset-2 hover:[&_a]:text-sky-200"
+            >
+                <div class="w-fit max-w-[80%] rounded-2xl border border-amber-500/30 bg-gradient-to-b from-[#3b2d1c] to-[#1f1710] px-4 py-3 text-amber-100 shadow-[inset_0_1px_0_rgba(255,220,160,0.12),0_8px_20px_rgba(0,0,0,0.35)]">
+                    Welcome, Defender. Ask me about maps, builds, heroes, stats, and progression.
+                </div>
+            </div>
+
+            <!-- Input -->
+            <form id="chat-form" class="border-t-2 border-[#8b6b2f] bg-gradient-to-b from-[#24170d] to-[#130d09] p-4">
+                <div class="flex gap-3">
+                    <div id="score-board" class="mb-4 text-amber-200 font-semibold">
+                        Score: 0 / 0
+                    </div>
+                    <input
+                            type="text"
+                            id="message-input"
+                            name="message"
+                            placeholder="Ask your question..."
+                            class="flex-1 rounded-xl border-2 border-[#8a6a33] bg-[#19130f] px-4 py-3 text-amber-50 placeholder:text-amber-200/35 outline-none shadow-[inset_0_2px_6px_rgba(0,0,0,0.5)] transition focus:border-sky-400 focus:ring-2 focus:ring-sky-500/30"
+                    />
+                    <button
+                            type="submit"
+                            id="send-button"
+                            class="min-w-[140px] rounded-xl border-2 border-[#b89452] bg-[linear-gradient(180deg,#9f8453_0%,#685130_48%,#3a2d1c_100%)] px-5 py-3 font-bold tracking-wide text-amber-100 shadow-[inset_0_1px_0_rgba(255,235,190,0.25),0_8px_18px_rgba(0,0,0,0.45)] transition hover:scale-[1.02] hover:brightness-110 active:scale-[0.98]"
+                    >
+                        Send
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+</body>
+</html>
