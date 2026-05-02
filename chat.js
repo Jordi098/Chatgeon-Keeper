@@ -1,12 +1,7 @@
 import {AzureChatOpenAI} from "@langchain/openai";
 import {micromark} from "micromark";
 
-let messages = {
-    history: [
-        {
-            role: "system",
-            content: `
-You are an expert AI assistant for Dungeon Defenders, designed to help players understand, improve, and enjoy the game.
+let SYSTEM_PROMPT = `You are an expert AI assistant for Dungeon Defenders, designed to help players understand, improve, and enjoy the game.
 
 Explain each Dungeon Defenders hero briefly and clearly, including all of their defenses/towers, what each defense does, and what it is mainly used for. Keep it short, practical, and easy to understand.
 Only answer Dungeon defenders related questions only. 
@@ -316,8 +311,12 @@ How to answer gear questions:
 - Suggest upgrade priorities
 - Add the Best in Slot Guide when relevant
 Main goal:
-Help the user become better at Dungeon Defenders by giving reliable guidance, smart strategies, clear map builds, and useful links tailored to their needs.
-    `,
+Help the user become better at Dungeon Defenders by giving reliable guidance, smart strategies, clear map builds, and useful links tailored to their needs.`
+let messages = {
+    history: [
+        {
+            role: "system",
+            content: SYSTEM_PROMPT,
         },
     ],
 };
@@ -326,12 +325,62 @@ const model = new AzureChatOpenAI({
     temperature: 0.2,
 });
 
+let questionCount = 0;
+
+async function summarizeHistory() {
+    const summaryPrompt = [
+        {
+            role: "system",
+            content: `
+Summarize the conversation so far.
+
+Keep the summary short but useful.
+Include:
+- the user's main questions
+- the assistant's important answers
+- any important Dungeon Defenders context
+- any preferences or goals the user mentioned
+
+Do not add new advice.
+Use plain markdown.
+            `,
+        },
+        ...messages.history.filter((msg) => msg.role !== "system"),
+    ];
+
+    const summaryResult = await model.invoke(summaryPrompt);
+
+    const summaryText =
+        typeof summaryResult.content === "string"
+            ? summaryResult.content
+            : JSON.stringify(summaryResult.content);
+
+    messages.history = [
+        {
+            role: "system",
+            content: SYSTEM_PROMPT,
+        },
+        {
+            role: "system",
+            content: `
+Conversation summary so far:
+
+${summaryText}
+
+Use this summary as memory for the next answers.
+            `,
+        },
+    ];
+}
+
 export async function callAssistant(prompt) {
     try {
         messages.history.push({
             role: "user",
             content: prompt,
         });
+
+        questionCount++;
 
         const result = await model.invoke(messages.history);
 
@@ -346,6 +395,11 @@ export async function callAssistant(prompt) {
             role: "assistant",
             content: assistantText,
         });
+
+        if (questionCount >= 5) {
+            await summarizeHistory();
+            questionCount = 0;
+        }
 
         return {
             response: micromark(assistantText),
